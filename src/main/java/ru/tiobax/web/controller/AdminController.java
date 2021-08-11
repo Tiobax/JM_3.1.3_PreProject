@@ -25,7 +25,7 @@ public class AdminController {
         return "admins/new";
     }
 
-    @PostMapping(path = "/new")
+    @PostMapping
     public String addNewUser(@ModelAttribute User user,
                              @RequestParam(required = false) String[] role) {
         userService.addNewUser(user);
@@ -45,7 +45,7 @@ public class AdminController {
         return "admins/edit";
     }
 
-    @PostMapping(path = "/edit/{id}")
+    @PutMapping
     public String updateUser(@ModelAttribute User user,
                              @RequestParam(required = false) String[] role) {
         userService.updateUser(user);
@@ -57,7 +57,7 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-    @PostMapping(path = "/delete/{id}")
+    @DeleteMapping(path = "/{id}")
     public String deleteUser(@PathVariable("id") Long id) {
         userService.deleteUser(id);
         return "redirect:/admin";

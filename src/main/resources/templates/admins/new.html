@@ -9,7 +9,7 @@
   <input type="submit" value="Logout">
 </form>
 <br>
-<form th:method="POST" th:action="@{/admin/new}" th:object="${user}">
+<form th:method="POST" th:action="@{/admin}" th:object="${user}">
   <label for="email">Email</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <input type="email" th:field="*{email}" id="email" size="100">
   <br><br>
