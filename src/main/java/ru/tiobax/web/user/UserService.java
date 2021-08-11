@@ -1,7 +1,5 @@
 package ru.tiobax.web.user;
 
-import ru.tiobax.web.role.Role;
-
 import java.util.List;
 
 public interface UserService {
@@ -12,7 +10,4 @@ public interface UserService {
     void addNewUser(User user);
     void updateUser(User user);
     void addRoleToUser(String email, String nameRole);
-    void addNewRole(Role nameRole);
-
-
 }

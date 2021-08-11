@@ -9,16 +9,19 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tiobax.web.role.Role;
-import ru.tiobax.web.role.RoleRepository;
+import ru.tiobax.web.role.RoleServiceImpl;
 
 import java.util.HashSet;
 import java.util.List;
 
-@Service @RequiredArgsConstructor @Transactional @Slf4j
+@Service
+@RequiredArgsConstructor
+@Transactional
+@Slf4j
 public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
+    private final RoleServiceImpl roleService;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -108,19 +111,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public void addRoleToUser(String email, String nameRole) {
         log.info("Adding role {} to user {}", email, nameRole);
         User user = userRepository.findByEmail(email);
-        Role role = roleRepository.findByNameRole(nameRole);
+        Role role = roleService.findByNameRole(nameRole);
         user.getRoles().add(role);
     }
-
-    @Override
-    public void addNewRole(Role role) {
-        log.info("Saving new role {} to database", role.getNameRole());
-        Role roleByName = roleRepository.findByNameRole(role.getNameRole());
-        if (roleByName != null) {
-            throw new IllegalStateException("Role taken");
-        }
-        roleRepository.save(role);
-    }
-
 
 }

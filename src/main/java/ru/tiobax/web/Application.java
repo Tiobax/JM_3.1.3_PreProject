@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.tiobax.web.role.Role;
+import ru.tiobax.web.role.RoleService;
+import ru.tiobax.web.role.RoleServiceImpl;
 import ru.tiobax.web.user.User;
 import ru.tiobax.web.user.UserServiceImpl;
 
@@ -26,10 +28,10 @@ public class Application {
 	}
 
 	@Bean
-	CommandLineRunner commandLineRunner(UserServiceImpl userService) {
+	CommandLineRunner commandLineRunner(UserServiceImpl userService, RoleServiceImpl roleService) {
 		return args -> {
-			userService.addNewRole(new Role(null, "ROLE_USER"));
-			userService.addNewRole(new Role(null, "ROLE_ADMIN"));
+			roleService.addNewRole(new Role(null, "ROLE_USER"));
+			roleService.addNewRole(new Role(null, "ROLE_ADMIN"));
 
 			userService.addNewUser(new User(null, "zederon@mail.ru", "Evgeny", "Buko", LocalDate.of(1987, Month.FEBRUARY, 1), "123321", true, new HashSet<>()));
 			userService.addNewUser(new User(null, "pupkin@mail.ru", "Vasia", "Pupkin", LocalDate.of(1911, Month.APRIL, 1), "123321", true, new HashSet<>()));

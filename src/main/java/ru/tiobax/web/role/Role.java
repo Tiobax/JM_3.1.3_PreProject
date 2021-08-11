@@ -7,7 +7,11 @@ import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 
-@Entity @Table @Data @NoArgsConstructor @AllArgsConstructor
+@Entity
+@Table
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Role implements GrantedAuthority {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
