@@ -27,7 +27,7 @@ public class User implements UserDetails {
     private LocalDate dob;
     private String password;
     private boolean enabled;
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     private Set<Role> roles = new HashSet<>();
 
     @Override
