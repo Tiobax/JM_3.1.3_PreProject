@@ -58,4 +58,8 @@ public class User implements UserDetails {
     public boolean isCredentialsNonExpired() {
         return enabled;
     }
+
+    public boolean containsRole(String role) {
+        return roles.stream().filter(x -> x.getNameRole().equals(role)).count() > 0;
+    }
 }

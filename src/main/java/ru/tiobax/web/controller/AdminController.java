@@ -1,33 +1,43 @@
 package ru.tiobax.web.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.tiobax.web.user.User;
 import ru.tiobax.web.user.UserServiceImpl;
 
-import java.util.stream.Collectors;
 
-@Controller @RequestMapping(path = "/admin") @RequiredArgsConstructor
+@Controller
+@RequestMapping(path = "/admin")
+@RequiredArgsConstructor
+@Slf4j
 public class AdminController {
 
     private final UserServiceImpl userService;
 
     @GetMapping
-    public String getAllUsers(Model model) {
+    public String getAllUsers(Model model,
+                              Authentication authentication) {
+        model.addAttribute("admin", userService.getUserByEmail(authentication.getName()));
         model.addAttribute("users", userService.getAllUsers());
         return "admins/admin";
     }
 
     @GetMapping(path = "/new")
-    public String newUser(@ModelAttribute("user") User user) {
+    public String newUser(@ModelAttribute("user") User user,
+                          Model model,
+                          Authentication authentication) {
+        model.addAttribute("admin", userService.getUserByEmail(authentication.getName()));
         return "admins/new";
     }
 
     @PostMapping
     public String addNewUser(@ModelAttribute User user,
                              @RequestParam(required = false) String[] role) {
+        log.info("role {}", role);
         userService.addNewUser(user);
         if (role != null) {
             for (String rl: role) {
@@ -37,18 +47,13 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-    @GetMapping(path = "/edit/{id}")
-    public String editUser(@PathVariable("id") Long id, Model model) {
-        User user = userService.getUserById(id);
-        model.addAttribute("user", user);
-        model.addAttribute("roles", user.getRoles().stream().map(x -> x.getNameRole()).collect(Collectors.toSet()));
-        return "admins/edit";
-    }
-
     @PutMapping
     public String updateUser(@ModelAttribute User user,
+                             @RequestParam(required = false) String password,
                              @RequestParam(required = false) String[] role) {
-        userService.updateUser(user);
+        log.info("user: {}", user);
+        log.info("roles: {}", role);
+        userService.updateUser(user, password);
         if (role != null) {
             for (String rl: role) {
                 userService.addRoleToUser(user.getEmail(), rl);

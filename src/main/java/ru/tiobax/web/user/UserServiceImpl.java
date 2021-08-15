@@ -82,10 +82,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void updateUser(User user) {
+    public void updateUser(User user, String password) {
         log.info("Update user {} to database", user.getEmail());
-        User userWillBeUpdate = userRepository.findById(user.getId())
-                .orElseThrow(() -> new IllegalStateException("User with id " + user.getId() + " does not exists"));
+        User userWillBeUpdate = userRepository.findByEmail(user.getEmail());
         if (!userWillBeUpdate.getEmail().equals(user.getEmail())) {
             userWillBeUpdate.setEmail(user.getEmail());
         }
@@ -98,8 +97,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (!userWillBeUpdate.getDob().equals(user.getDob())) {
             userWillBeUpdate.setDob(user.getDob());
         }
-        if (!userWillBeUpdate.getPassword().equals(user.getPassword())) {
-            userWillBeUpdate.setPassword(passwordEncoder.encode(user.getPassword()));
+        if (!password.equals("")) {
+            userWillBeUpdate.setPassword(passwordEncoder.encode(password));
         }
         if (userWillBeUpdate.isEnabled() != user.isEnabled()) {
             userWillBeUpdate.setEnabled(user.isEnabled());
