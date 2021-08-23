@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>ru.tiobax</groupId>
-	<artifactId>JM_3.1.2_PreProject</artifactId>
+	<artifactId>JM_3.1.3_PreProject</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>JM_3.1.2_PreProject</name>
+	<name>JM_3.1.3_PreProject</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>16</java.version>

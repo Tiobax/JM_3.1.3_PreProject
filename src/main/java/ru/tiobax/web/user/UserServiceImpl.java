@@ -13,6 +13,7 @@ import ru.tiobax.web.role.RoleServiceImpl;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -50,8 +51,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public User getUserById(Long id) {
         log.info("Fetching user");
-        return userRepository.findById(id)
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalStateException("User with id " + id + " does not exists"));
+        return user;
     }
 
     @Override
@@ -78,32 +80,36 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             throw new IllegalStateException("Email taken");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        Set<Role> roleSet = new HashSet<>();
+        if (user.getRoles() != null) {
+            for (Role rl: user.getRoles()) {
+                roleSet.add(roleService.findByNameRole(rl.getNameRole()));
+            }
+        }
+        user.setRoles(roleSet);
         userRepository.save(user);
     }
 
     @Override
-    public void updateUser(User user, String password) {
+    public void updateUser(User user) {
         log.info("Update user {} to database", user.getEmail());
-        User userWillBeUpdate = userRepository.findByEmail(user.getEmail());
-        if (!userWillBeUpdate.getEmail().equals(user.getEmail())) {
-            userWillBeUpdate.setEmail(user.getEmail());
+        User userByEmail = userRepository.findByEmail(user.getEmail());
+        if (userByEmail != null && userByEmail.getId() != user.getId()) {
+            throw new IllegalStateException("Email taken");
         }
-        if (!userWillBeUpdate.getFirst_name().equals(user.getFirst_name())) {
-            userWillBeUpdate.setFirst_name(user.getFirst_name());
+        if (user.getPassword().equals("")) {
+            user.setPassword(getUserById(user.getId()).getPassword());
+        } else {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
-        if (!userWillBeUpdate.getLast_name().equals(user.getLast_name())) {
-            userWillBeUpdate.setLast_name(user.getLast_name());
+        Set<Role> roleSet = new HashSet<>();
+        if (user.getRoles() != null) {
+            for (Role rl: user.getRoles()) {
+                roleSet.add(roleService.findByNameRole(rl.getNameRole()));
+            }
         }
-        if (!userWillBeUpdate.getDob().equals(user.getDob())) {
-            userWillBeUpdate.setDob(user.getDob());
-        }
-        if (!password.equals("")) {
-            userWillBeUpdate.setPassword(passwordEncoder.encode(password));
-        }
-        if (userWillBeUpdate.isEnabled() != user.isEnabled()) {
-            userWillBeUpdate.setEnabled(user.isEnabled());
-        }
-        userWillBeUpdate.setRoles(new HashSet<Role>());
+        user.setRoles(roleSet);
+        userRepository.save(user);
     }
 
     @Override
